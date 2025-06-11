@@ -41,10 +41,11 @@ function assertionEqualBytes(this: Chai.AssertionStatic, expected: chaiBytes.Buf
 function toUint8Array(buf: chaiBytes.BufferType): Uint8Array {
   if (buf == null) throw new TypeError('expected value is not defined')
   if (typeof buf === 'string') return fromHexString(buf)
+  if (isUint8Array(buf)) return Uint8Array.from(buf)
   if (isArrayBufferLike(buf)) return new Uint8Array(buf)
   if (isArrayBufferView(buf)) return new Uint8Array(buf.buffer)
   if (isIterable(buf)) return Uint8Array.from(buf)
-  if (isArrayLike(buf) && isUint8Array(buf)) return Uint8Array.from(Array.from(buf))
+  if (isArrayLike(buf) && isUint8ArrayLike(buf)) return Uint8Array.from(Array.from(buf))
   throw new TypeError('expected value type is not supported')
 }
 
@@ -65,6 +66,12 @@ function isArrayBufferView(buf: unknown): buf is ArrayBufferView {
   return 'buffer' in buf && isArrayBufferLike(buf.buffer)
 }
 
+function isUint8Array(buf: unknown): buf is Uint8Array {
+  if (typeof buf !== 'object' || buf === null) return false
+  if (!('byteLength' in buf) || typeof buf.byteLength !== 'number') return false
+  return Symbol.toStringTag in buf && buf[Symbol.toStringTag] === 'Uint8Array'
+}
+
 function isIterable<T>(iter: unknown): iter is Iterable<T> {
   if (typeof iter !== 'object' || iter === null) return false
   return Symbol.iterator in iter && typeof iter[Symbol.iterator] === 'function'
@@ -75,7 +82,7 @@ function isArrayLike<T>(arr: unknown): arr is ArrayLike<T> {
   return 'length' in arr && typeof arr.length === 'number'
 }
 
-function isUint8Array(array: ArrayLike<unknown>): array is ArrayLike<number> {
+function isUint8ArrayLike(array: ArrayLike<unknown>): array is ArrayLike<number> {
   for (let index = 0, b; index < array.length; index++) {
     b = array[index]
     if (typeof b !== 'number') return false
