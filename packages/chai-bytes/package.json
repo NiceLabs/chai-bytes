@@ -1,0 +1,32 @@
+{
+  "name": "@nice-labs/chai-bytes",
+  "version": "0.1.1",
+  "repository": "https://github.com/NiceLabs/chai-bytes.git",
+  "author": "septs <github@septs.pw>",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.js",
+      "types": "./index.d.ts"
+    }
+  },
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "README.md"
+  ],
+  "scripts": {
+    "prepublishOnly": "git clean -xdf && tsc"
+  },
+  "devDependencies": {
+    "@types/chai": "*"
+  },
+  "peerDependencies": {
+    "chai": ">= 5.2.0 && < 6.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

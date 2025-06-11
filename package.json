@@ -1,0 +1,15 @@
+{
+  "name": "chai-bytes",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "deploy": "npm publish --workspace @nice-labs/chai-bytes",
+    "test": "npm test --workspace chai-bytes-e2e-tests"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
