@@ -1,8 +1,14 @@
 {
   "name": "@nice-labs/chai-bytes",
-  "version": "0.1.1",
-  "repository": "https://github.com/NiceLabs/chai-bytes.git",
-  "author": "septs <github@septs.pw>",
+  "version": "0.1.2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NiceLabs/chai-bytes.git"
+  },
+  "author": {
+    "name": "septs",
+    "email": "github@septs.pw"
+  },
   "exports": {
     ".": {
       "import": "./index.js",
