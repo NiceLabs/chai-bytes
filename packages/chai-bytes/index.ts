@@ -15,36 +15,32 @@ declare global {
 }
 
 export function chaiBytes(chai: Chai.ChaiStatic): void {
-  chai.Assertion.addMethod('equalBytes', assertionEqualBytes)
-  chai.assert.equalBytes = (actual, expected, message) =>
+  chai.Assertion.addMethod('equalBytes', function (expected: chaiBytes.BufferType) {
+    if (!isArrayBufferView(this._obj)) throw new Error('Assertion requires a ArrayBufferView')
+    const act = toUint8Array(this._obj)
+    const exp = toUint8Array(expected)
+    const matched = 'expected #{act} to equal #{exp}'
+    const unmatched = 'expected #{act} to not equal #{exp}'
+    const showDiff = chai.config.showDiff
+    this.assert(equals(act, exp), matched, unmatched, toHexString(exp), toHexString(act), showDiff)
+  })
+  chai.assert.equalBytes = function (actual, expected, message) {
     new chai.Assertion(actual, message, chai.assert.equalBytes, true).to.equalBytes(expected)
+  }
 }
 
 export namespace chaiBytes {
   export type BufferType = string | Iterable<number> | ArrayLike<number> | ArrayBufferLike | ArrayBufferView
 }
 
-function assertionEqualBytes(this: Chai.AssertionStatic, expected: chaiBytes.BufferType) {
-  if (!isArrayBufferView(this._obj)) throw new Error('Assertion requires a ArrayBufferView')
-  const act = new Uint8Array(this._obj.buffer)
-  const exp = toUint8Array(expected)
-  this.assert(
-    equals(act, exp), // check if the actual value equals the expected value
-    'expected #{act} to equal #{exp}', // message when assertion passes
-    'expected #{act} to not equal #{exp}', // message when assertion fails
-    toHexString(exp), // expected value
-    toHexString(act), // actual value
-    true // show diff
-  )
-}
-
 function toUint8Array(buf: chaiBytes.BufferType): Uint8Array {
   if (buf == null) throw new TypeError('expected value is not defined')
   if (typeof buf === 'string') return fromHexString(buf)
-  if (isUint8Array(buf) || isIterable(buf)) return Uint8Array.from(buf)
-  if (isArrayBufferLike(buf)) return new Uint8Array(buf)
+  if (isUint8Array(buf)) return Uint8Array.from(buf)
   if (isArrayBufferView(buf)) return new Uint8Array(buf.buffer)
+  if (isArrayBufferLike(buf)) return new Uint8Array(buf)
   if (isArrayLike(buf) && isUint8ArrayLike(buf)) return Uint8Array.from(buf)
+  if (isIterable(buf)) return Uint8Array.from(buf)
   throw new TypeError('expected value type is not supported')
 }
 
