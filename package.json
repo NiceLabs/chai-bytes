@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "deploy": "npm publish --workspace @nice-labs/chai-bytes",
-    "test": "npm test --workspace chai-bytes-e2e-tests"
+    "test": "npm test --workspace chai-bytes-tests"
   },
   "workspaces": [
     "packages/*"
