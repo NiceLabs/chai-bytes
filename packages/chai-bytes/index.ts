@@ -41,11 +41,10 @@ function assertionEqualBytes(this: Chai.AssertionStatic, expected: chaiBytes.Buf
 function toUint8Array(buf: chaiBytes.BufferType): Uint8Array {
   if (buf == null) throw new TypeError('expected value is not defined')
   if (typeof buf === 'string') return fromHexString(buf)
-  if (isUint8Array(buf)) return Uint8Array.from(buf)
+  if (isUint8Array(buf) || isIterable(buf)) return Uint8Array.from(buf)
   if (isArrayBufferLike(buf)) return new Uint8Array(buf)
   if (isArrayBufferView(buf)) return new Uint8Array(buf.buffer)
-  if (isIterable(buf)) return Uint8Array.from(buf)
-  if (isArrayLike(buf) && isUint8ArrayLike(buf)) return Uint8Array.from(Array.from(buf))
+  if (isArrayLike(buf) && isUint8ArrayLike(buf)) return Uint8Array.from(buf)
   throw new TypeError('expected value type is not supported')
 }
 
@@ -78,6 +77,7 @@ function isIterable<T>(iter: unknown): iter is Iterable<T> {
 }
 
 function isArrayLike<T>(arr: unknown): arr is ArrayLike<T> {
+  if (Array.isArray(arr)) return true
   if (typeof arr !== 'object' || arr === null) return false
   return 'length' in arr && typeof arr.length === 'number'
 }
